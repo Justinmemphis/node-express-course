@@ -1,28 +1,24 @@
 const express = require('express')
-const app = express() // invoke it
+const app = express()
+const {products} = require('./data')
 
-// invoked everytime user is performing GET request on domain
-app.get('/',(req, res)=>{
-  console.log('user hit the resource')
-  res.status(200).send('Home Page')
+app.get('/',(req,res)=>{
+  res.send('<h1>Home Page</h1><a href="/api/products">products</a>')
+})
+app.get('/api/products',(req,res)=>{
+  const newProducts = products.map((product)=>{
+    const {id,name,image} = product;
+    return {id,name,image}
+  })
+  res.json(newProducts)
+})
+app.get('/api/products/1',(req,res)=>{
+  const singleProduct = products.find((product)=> product.id === 1)
+
+  res.json(singleProduct)
 })
 
-app.get('/about', (req,res)=>{
-  res.status(200).send('About Page')
-})
-
-app.all('*',(req,res)=>{
-  res.status(404).send('<h1>resource not found</h1>')
-})
 
 app.listen(5000,()=>{
-  console.log('server is listening on port 5000...')
+  console.log('Server is listening on port 5000...')
 })
-
-// app.get - read data
-// app.post - insert data
-// app.put - update data
-// app.delete - delete data
-// app.all - apply to all HTTP verbs
-// app.use - middleware
-// app.listen
